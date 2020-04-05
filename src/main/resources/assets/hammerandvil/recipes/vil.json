@@ -1,0 +1,21 @@
+{
+	"type": "forge:ore_shaped",
+	"pattern": [
+	"I I",
+	"IBI",
+	" I "
+	],
+	"key": {
+		"I": {
+			"type": "forge:ore_dict",
+			"ore": "ingotIron"
+		},
+		"B": {
+			"type": "forge:ore_dict",
+			"ore": "blockIron"
+		}
+	},
+	"result": {
+		"item": "hammerandvil:vil"
+	}
+}
