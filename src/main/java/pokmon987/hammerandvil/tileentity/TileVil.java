@@ -13,6 +13,7 @@ public class TileVil extends TileEntity {
 	
 	private VilInventoryHandler inventory = new VilInventoryHandler(1);
 	public HitHandler hits = new HitHandler();
+	public LastHitTool lastHit = new LastHitTool();
 	
 	public IItemHandlerModifiable getInventory() {
 		return this.inventory;
@@ -60,7 +61,17 @@ public class TileVil extends TileEntity {
 		return this.writeToNBT(new NBTTagCompound());
 	}
 	
-	
+	public class LastHitTool {
+		ItemStack tool;
+		
+		public void set(ItemStack heldTool) {
+			this.tool = heldTool;
+		}
+		
+		public ItemStack get() {
+			return tool;
+		}
+	}
 	
 	public class VilInventoryHandler extends ItemStackHandler {
 		

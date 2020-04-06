@@ -23,10 +23,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokmon987.hammerandvil.items.ModItems;
 import pokmon987.hammerandvil.recipes.VilRecipes;
 import pokmon987.hammerandvil.tileentity.TileVil;
+import pokmon987.hammerandvil.tileentity.TileVil.LastHitTool;
 import pokmon987.hammerandvil.util.HitHandler;
+import pokmon987.hammerandvil.util.MetaCheck;
 
 public class BlockVil extends Block {
 	
@@ -97,16 +98,17 @@ public class BlockVil extends Block {
 	
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
-			ItemStack handItem = playerIn.getHeldItemMainhand().getItem() == ModItems.itemHammer || playerIn.getHeldItemMainhand().isEmpty() ? playerIn.getHeldItemOffhand() : playerIn.getHeldItemMainhand();
+			ItemStack handItem = VilRecipes.isTool(playerIn.getHeldItemMainhand()) || playerIn.getHeldItemMainhand().isEmpty() ? playerIn.getHeldItemOffhand() : playerIn.getHeldItemMainhand();
 			TileVil tile = (TileVil)worldIn.getTileEntity(pos);
 			if (tile != null) {
 				ItemStack stack = tile.getInventory().getStackInSlot(0);
-				if (stack.isEmpty()) {
+				if (stack.isEmpty() && !handItem.isEmpty()) {
 					handItem = playerIn.getHeldItemOffhand().isEmpty() ? playerIn.getHeldItemMainhand() : handItem;
 					ItemStack itemInv = handItem.copy();
 					itemInv.setCount(1);
 					tile.getInventory().setStackInSlot(0, itemInv);
 					handItem.setCount(handItem.getCount()-1);
+					worldIn.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, 1.0F);
 					worldIn.notifyBlockUpdate(pos, state, state, 1);
 				} else {
 					EntityItem entity = new EntityItem(worldIn, pos.getX()+0.5D, pos.getY()+0.9D, pos.getZ()+0.5D, stack.copy());
@@ -132,15 +134,22 @@ public class BlockVil extends Block {
 			ItemStack hand = playerIn.getHeldItemMainhand();
 			TileVil tile = (TileVil)worldIn.getTileEntity(pos);
 			HitHandler hits = tile.hits;
+			LastHitTool lastTool = tile.lastHit;
+			hits.setCurrentHits(lastTool.get() == null || MetaCheck.hasEqualMeta(hand, lastTool.get()) ? hits.getCurrentHits() : hits.resetHits());
 			ItemStack stack = tile.getInventory().getStackInSlot(0);
 			//Will check if the held item is a hammer or not
-			if (hand.getItem() == ModItems.itemHammer) {
+			if (!VilRecipes.getVilResult(stack, hand).isEmpty() && !VilRecipes.getToolForRecipe(hand, stack).isEmpty()) {
+				ItemStack requiredTool = VilRecipes.getToolForRecipe(hand, stack);
 				/**System.out.println("Hand was holding hammer! The stack is currently: " + stack);
 				*System.out.println("Vil result will be: " + VilRecipes.getVilResult(stack));
 				*System.out.println("Required hits will be: " + VilRecipes.getHitsRequiredForStack(stack));
 				**/
 				//Checks to make sure that the vilResult for the inventory slot is not empty
-				if (!VilRecipes.getVilResult(stack).isEmpty()) {
+				System.out.println("RequiredTool is: " + requiredTool.getItem());
+				System.out.println("hasEqualMeta returns: " + MetaCheck.hasEqualMeta(hand, requiredTool));
+				
+				if (hand.getItem() == requiredTool.getItem() && MetaCheck.hasEqualMeta(hand, requiredTool)) {
+					lastTool.set(hand.copy());
 					Float requiredHits = VilRecipes.getHitsRequiredForStack(stack);
 					//If it's not empty, the hits variable increases by 1.0F
 					hits.increaseHitUntilPoint(requiredHits);
@@ -148,7 +157,7 @@ public class BlockVil extends Block {
 					worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, 1.5F);
 					//If the hits is equal to the current stack's requirement, it replaces the item with the result
 					if (hits.getCurrentHits() >= requiredHits) {
-						tile.getInventory().setStackInSlot(0, VilRecipes.getVilResult(stack));
+						tile.getInventory().setStackInSlot(0, VilRecipes.getVilResult(stack, hand));
 						worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.8F, 1.9F);
 						worldIn.notifyBlockUpdate(pos, worldIn.getBlockState(pos), worldIn.getBlockState(pos), 1);
 						hits.resetHits();
