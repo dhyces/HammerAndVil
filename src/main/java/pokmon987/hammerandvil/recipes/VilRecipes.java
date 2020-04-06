@@ -47,6 +47,10 @@ public class VilRecipes {
 		return ItemStack.EMPTY;
 	}
 	
+	public static boolean checkNameExists(String name) {
+		return false;
+	}
+	
 	public static ItemStack getRequiredTool(ItemStack input) {
 		for (Entry<String, ItemStack> entry : nameInList.entrySet()) {
 			if (input.getItem() == entry.getValue().getItem() && input.getMetadata() == entry.getValue().getMetadata()) {
@@ -79,7 +83,8 @@ public class VilRecipes {
 	
 	public static boolean isTool(ItemStack handTool) {
 		for (Entry<String, ItemStack> entry : toolList.entrySet()) {
-			if (MetaCheck.hasEqualMeta(handTool, entry.getValue())) {
+			ItemStack mappedTool = entry.getValue() != ItemStack.EMPTY ? entry.getValue() : new ItemStack(ModItems.itemHammer);
+			if (MetaCheck.hasEqualMeta(handTool, mappedTool)) {
 				return true;
 			}
 		}
