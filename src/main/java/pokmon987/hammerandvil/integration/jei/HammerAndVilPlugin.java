@@ -4,6 +4,6 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JEIPlugin;
 
 @JEIPlugin
-public class JEIVilRecipes implements IModPlugin{
+public class HammerAndVilPlugin implements IModPlugin {
 	
 }

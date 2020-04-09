@@ -23,6 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pokmon987.hammerandvil.HammerAndVil;
 import pokmon987.hammerandvil.recipes.VilRecipes;
 import pokmon987.hammerandvil.tileentity.TileVil;
 import pokmon987.hammerandvil.tileentity.TileVil.LastHitTool;
@@ -40,6 +41,8 @@ public class BlockVil extends Block {
 		setCreativeTab(CreativeTabs.DECORATIONS);
 		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		setHardness(3.0F);
+		setRegistryName("vil");
+		setUnlocalizedName(HammerAndVil.MODID + ".vil");
 	}
 	
 	@Override
@@ -98,12 +101,11 @@ public class BlockVil extends Block {
 	
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
-			ItemStack handItem = VilRecipes.isTool(playerIn.getHeldItemMainhand()) || playerIn.getHeldItemMainhand().isEmpty() ? playerIn.getHeldItemOffhand() : playerIn.getHeldItemMainhand();
+			ItemStack handItem = playerIn.getHeldItemOffhand().isEmpty() ? playerIn.getHeldItemMainhand() : playerIn.getHeldItemOffhand();
 			TileVil tile = (TileVil)worldIn.getTileEntity(pos);
 			if (tile != null) {
 				ItemStack stack = tile.getInventory().getStackInSlot(0);
 				if (stack.isEmpty() && !handItem.isEmpty()) {
-					handItem = playerIn.getHeldItemOffhand().isEmpty() ? playerIn.getHeldItemMainhand() : handItem;
 					ItemStack itemInv = handItem.copy();
 					itemInv.setCount(1);
 					tile.getInventory().setStackInSlot(0, itemInv);
