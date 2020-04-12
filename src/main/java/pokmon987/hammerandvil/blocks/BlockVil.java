@@ -14,10 +14,10 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -57,15 +57,18 @@ public class BlockVil extends Block {
 		
 	}
 	
+	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 	
+	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 		
 	}
 	
+	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		TileVil tile = (TileVil)worldIn.getTileEntity(pos);
 		ItemStack stack = tile.getInventory().getStackInSlot(0);
@@ -76,12 +79,11 @@ public class BlockVil extends Block {
 		super.breakBlock(worldIn, pos, state);
 	}
 	
+	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
+		EnumFacing enumfacing = state.getValue(FACING);
 		return enumfacing.getAxis() == EnumFacing.Axis.X ? X_AXIS_AABB : Z_AXIS_AABB;
 	}
-	
-	
 	
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
@@ -95,10 +97,6 @@ public class BlockVil extends Block {
 	}
 	
 	@Override
-	public IBlockState withRotation(IBlockState state, Rotation rot) {
-		return state.getBlock() != this ? state : state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
-	}
-	
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
 			ItemStack handItem = playerIn.getHeldItemOffhand().isEmpty() ? playerIn.getHeldItemMainhand() : playerIn.getHeldItemOffhand();
@@ -133,10 +131,11 @@ public class BlockVil extends Block {
 		if (!worldIn.isRemote) {
 			//System.out.println("The block was clicked! ");
 			//Establishes the initial variables
+			if (this.blockHardness == -1.0F) {this.setHardness(3.0F);}
 			ItemStack hand = playerIn.getHeldItemMainhand();
 			TileVil tile = (TileVil)worldIn.getTileEntity(pos);
 			HitHandler hits = tile.hits;
-			LastHitTool lastTool = tile.lastHit;
+			LastHitTool lastTool = tile.getToolHandler();
 			hits.setCurrentHits(lastTool.get() == null || MetaCheck.hasEqualMeta(hand, lastTool.get()) ? hits.getCurrentHits() : hits.resetHits());
 			ItemStack stack = tile.getInventory().getStackInSlot(0);
 			//Will check if the held item is a hammer or not
@@ -147,12 +146,14 @@ public class BlockVil extends Block {
 				*System.out.println("Required hits will be: " + VilRecipes.getHitsRequiredForStack(stack));
 				**/
 				//Checks to make sure that the vilResult for the inventory slot is not empty
-				System.out.println("RequiredTool is: " + requiredTool.getItem());
-				System.out.println("hasEqualMeta returns: " + MetaCheck.hasEqualMeta(hand, requiredTool));
+				//System.out.println("RequiredTool is: " + requiredTool.getItem());
+				//System.out.println("hasEqualMeta returns: " + MetaCheck.hasEqualMeta(hand, requiredTool));
 				
 				if (hand.getItem() == requiredTool.getItem() && MetaCheck.hasEqualMeta(hand, requiredTool)) {
+					setBlockUnbreakable();
 					lastTool.set(hand.copy());
-					Float requiredHits = VilRecipes.getHitsRequiredForStack(stack);
+					String recipeName = VilRecipes.getNameForRecipe(stack, requiredTool);
+					Float requiredHits = VilRecipes.getHitsRequiredByName(recipeName);
 					//If it's not empty, the hits variable increases by 1.0F
 					hits.increaseHitUntilPoint(requiredHits);
 					//System.out.println("The result was not empty! The number of hits is at: " + hits.getCurrentHits());
@@ -163,6 +164,26 @@ public class BlockVil extends Block {
 						worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.8F, 1.9F);
 						worldIn.notifyBlockUpdate(pos, worldIn.getBlockState(pos), worldIn.getBlockState(pos), 1);
 						hits.resetHits();
+						//add config option here to if damage item is onCraft then damage
+						if (hand.getMaxDamage() > 0) {
+							//if the hand item has a maxdamage that is over 0, damage the item by 1
+							hand.damageItem(1, playerIn);
+						} else if (hand.serializeNBT().hasKey("tag")) {
+							//if the hand item has an NBT key that is "tag", then it will damage the item by two points
+							//this is for Immersive Engineering tools, because of their tools being setup with subtypes
+							int damageAmount = hand.serializeNBT().getCompoundTag("tag").getInteger("Damage");
+							NBTTagCompound tag = new NBTTagCompound();
+							hand.writeToNBT(tag);
+							tag.getCompoundTag("tag").setInteger("Damage", damageAmount + 2);
+							hand.serializeNBT().merge(tag);
+						} else {
+							// if nothing else is true, then shrink the itemstack size by 1
+							hand.shrink(1);
+						}
+					}
+					if (playerIn.isCreative()) {
+						//This area was for setting up a way for the block to not be broken
+						
 					}
 				}
 			}

@@ -8,5 +8,7 @@ public class ItemHammer extends Item {
 	public ItemHammer() {
 		setCreativeTab(CreativeTabs.TOOLS);
 		setMaxStackSize(1);
+		//add config here to set the item's max damage
+		setMaxDamage(1000);
 	}
 }

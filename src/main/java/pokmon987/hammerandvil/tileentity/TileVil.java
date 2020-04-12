@@ -13,17 +13,22 @@ public class TileVil extends TileEntity {
 	
 	private VilInventoryHandler inventory = new VilInventoryHandler(1);
 	public HitHandler hits = new HitHandler();
-	public LastHitTool lastHit = new LastHitTool();
+	private LastHitTool lastHit = new LastHitTool();
 	
 	public IItemHandlerModifiable getInventory() {
 		return this.inventory;
 	}
 	
+	public LastHitTool getToolHandler() {
+		return this.lastHit;
+	}
+	
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		if (tag.hasKey("item") && tag.hasKey("hits")) {
+		if (tag.hasKey("item") && tag.hasKey("hits") && tag.hasKey("tool")) {
 			this.getInventory().setStackInSlot(0, new ItemStack(tag.getCompoundTag("item")));
+			this.getToolHandler().set(new ItemStack(tag.getCompoundTag("tool")));
 			this.hits.setCurrentHits(tag.getFloat("hits"));
 		} else {
 			this.getInventory().setStackInSlot(0, ItemStack.EMPTY);
@@ -34,11 +39,15 @@ public class TileVil extends TileEntity {
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		ItemStack stack = this.getInventory().getStackInSlot(0);
+		ItemStack lastTool = this.getToolHandler().get();
 		Float hits = this.hits.getCurrentHits();
 		if (!stack.isEmpty()) {
 			NBTTagCompound compound = new NBTTagCompound();
+			NBTTagCompound compoundTool = new NBTTagCompound();
 			stack.writeToNBT(compound);
 			tag.setTag("item", compound);
+			lastTool.writeToNBT(compoundTool);
+			tag.setTag("tool", compoundTool);
 			tag.setFloat("hits", hits);
 		}
 		return tag;
@@ -62,10 +71,11 @@ public class TileVil extends TileEntity {
 	}
 	
 	public class LastHitTool {
-		ItemStack tool;
+		ItemStack tool = ItemStack.EMPTY;
 		
 		public void set(ItemStack heldTool) {
 			this.tool = heldTool;
+			TileVil.this.markDirty();
 		}
 		
 		public ItemStack get() {

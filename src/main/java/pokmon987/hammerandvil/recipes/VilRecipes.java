@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import pokmon987.hammerandvil.HammerAndVil;
@@ -26,7 +25,7 @@ public class VilRecipes {
 	}
 	
 	public static void registerRecipes() {
-		addVilRecipe(HammerAndVil.MODID + ":blackConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLACK.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLACK.getMetadata()), 3.0F, new ItemStack(Items.DIAMOND_PICKAXE));
+		addVilRecipe(HammerAndVil.MODID + ":blackConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLACK.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLACK.getMetadata()), 3.0F, ItemStack.EMPTY);
 		addVilRecipe(HammerAndVil.MODID + ":blueConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLUE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLUE.getMetadata()), 3.0F, ItemStack.EMPTY);
 		addVilRecipe(HammerAndVil.MODID + ":cyanConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.CYAN.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.CYAN.getMetadata()), 3.0F, ItemStack.EMPTY);
 	}
@@ -39,29 +38,25 @@ public class VilRecipes {
 	}
 	
 	public static ItemStack getVilResultByName(String name) {
-		for (Entry<String, ItemStack> entry : nameOutList.entrySet()) {
-			if (name == entry.getKey()) {
-				return entry.getValue();
-			}
-		}
-		return ItemStack.EMPTY;
+		return nameOutList.get(name);
 	}
 	
 	public static boolean checkNameExists(String name) {
 		return false;
 	}
 	
-	public static ItemStack getRequiredTool(ItemStack input) {
+	public static String getNameForRecipe(ItemStack input, ItemStack tool) {
 		for (Entry<String, ItemStack> entry : nameInList.entrySet()) {
 			if (input.getItem() == entry.getValue().getItem() && input.getMetadata() == entry.getValue().getMetadata()) {
 				for (Entry<String, ItemStack> entry2 : toolList.entrySet()) {
-					if (entry.getKey() == entry2.getKey()) {
-						return entry2.getValue();
+					ItemStack mappedTool = entry2.getValue() != ItemStack.EMPTY ? entry2.getValue() : new ItemStack(ModItems.itemHammer);
+					if (entry.getKey() == entry2.getKey() && MetaCheck.hasEqualMeta(tool, mappedTool)) {
+						return entry.getKey();
 					}
 				}
 			}
 		}
-		return ItemStack.EMPTY;
+		return null;
 	}
 	
 	public static ItemStack getToolForRecipe(ItemStack tool, ItemStack input) {
@@ -108,16 +103,28 @@ public class VilRecipes {
 		return ItemStack.EMPTY;
 	}
 	
-	public static Float getHitsRequiredForStack(ItemStack stack) {
-		 for (Entry<String, ItemStack> entry : nameInList.entrySet()) {
-		 	if (stack.getItem() == entry.getValue().getItem() && stack.getMetadata() == entry.getValue().getMetadata()) {
-		 		for (Entry<String, Float> entry2 : hitList.entrySet()) {
-		 			if (entry.getKey() == entry2.getKey()) {
-		 				return entry2.getValue();
-		 			}
-		 		}
+	public static Float getHitsRequiredByName(String name) {
+		for (Entry<String, Float> entry : hitList.entrySet()) {
+		 	if (name == entry.getKey()) {
+		 		return entry.getValue();
 		 	}
 		}
 		 return null;
+	}
+	
+	public Map<String, ItemStack> getNameInList() {
+		return nameInList;
+	}
+	
+	public Map<String, ItemStack> getNameOutList() {
+		return nameOutList;
+	}
+	
+	public Map<String, ItemStack> getToolList() {
+		return toolList;
+	}
+	
+	public Map<String, Float> getHitList() {
+		return hitList;
 	}
 }

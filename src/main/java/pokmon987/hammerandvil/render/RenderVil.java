@@ -44,12 +44,11 @@ public class RenderVil extends TileEntitySpecialRenderer<TileVil> {
 		ItemStack stack = te.getInventory().getStackInSlot(0);
 		if (!stack.isEmpty()) {
 			RenderHelper.enableStandardItemLighting();
-			GlStateManager.enableLighting();
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(x+translateX, y+0.775D, z+translateZ);
+			GlStateManager.translate(x+translateX, y+0.77D, z+translateZ);
 			GlStateManager.rotate(90, 1, 0, 0);
 			GlStateManager.rotate(rotY, 0, 0, 1);
-			float scale = (float)(stack.getItem() instanceof ItemBlock ? 0.55F : 0.5F);
+			float scale = (float)(stack.getItem() instanceof ItemBlock ? 0.55F : 0.45F);
 			GlStateManager.scale(scale, scale, scale);
 			Minecraft.getMinecraft().getRenderItem().renderItem(stack, TransformType.FIXED);
 			GlStateManager.popMatrix();

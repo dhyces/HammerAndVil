@@ -9,6 +9,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import crafttweaker.api.oredict.IOreDictEntry;
 import crafttweaker.mc1120.CraftTweaker;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -24,8 +25,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class CTVilRecipe {
 	
 	@ZenMethod
-	public static void addRecipe(String name, IItemStack output, IIngredient input, Float hits, @Nullable IItemStack tool) {
-		CraftTweaker.LATE_ACTIONS.add(new Add(name, CraftTweakerMC.getItemStack(output), input, hits, CraftTweakerMC.getItemStack(tool)));
+	public static void addRecipe(String name, IItemStack output, IIngredient input, Float hits, @Nullable IIngredient tool) {
+		CraftTweaker.LATE_ACTIONS.add(new Add(name, CraftTweakerMC.getItemStack(output), input, hits, tool));
 	}
 	
 	private static class Add implements IAction {
@@ -33,9 +34,9 @@ public class CTVilRecipe {
 		private final ItemStack output;
 		private final IIngredient input;
 		private final Float hits;
-		private final ItemStack tool;
+		private final IIngredient tool;
 		
-		public Add(String name, ItemStack output, IIngredient input, Float hits, ItemStack tool) {
+		public Add(String name, ItemStack output, IIngredient input, Float hits, IIngredient tool) {
 			this.name = new ResourceLocation(HammerAndVil.MODID, name);
 			this.output = output;
 			this.input = input;
@@ -45,14 +46,19 @@ public class CTVilRecipe {
 		
 		@Override
 		public void apply() {
-			ItemStack result = VilRecipes.getVilResult(CraftTweakerMC.getItemStack(input), tool);
-			ItemStack requiredTool = VilRecipes.getRequiredTool(CraftTweakerMC.getItemStack(input));
-			if (result == ItemStack.EMPTY || !MetaCheck.hasEqualMeta(tool, requiredTool)) {
-				VilRecipes.addVilRecipe(name.toString(), output, CraftTweakerMC.getItemStack(input), hits, tool);
-			} else if (result == ItemStack.EMPTY && tool.isEmpty()) {
-				VilRecipes.addVilRecipe(name.toString(), output, CraftTweakerMC.getItemStack(input), hits, tool);
+			boolean result = new VilRecipes().getNameOutList().containsKey(name.toString());
+			ItemStack toolStack = CraftTweakerMC.getItemStack(tool);
+			ItemStack requiredTool = VilRecipes.getToolForRecipe(toolStack, CraftTweakerMC.getItemStack(input));
+			if ((result == false || !MetaCheck.hasEqualMeta(toolStack, requiredTool)) && input.getAmount() == 1) {
+				if (tool instanceof IOreDictEntry) {
+					for (int i = 0; i < tool.getItems().size(); i++) {
+						VilRecipes.addVilRecipe(name.toString() + i, output, CraftTweakerMC.getItemStack(input), hits, CraftTweakerMC.getItemStack(tool.getItems().get(i)));
+					}
+				} else {
+					VilRecipes.addVilRecipe(name.toString(), output, CraftTweakerMC.getItemStack(input), hits, toolStack);
+				}
 			} else {
-				CraftTweakerAPI.logError("The result may not have been empty: " + result.getItem().getRegistryName() + ". Or a recipe with that input and tool already exists: " + input + " " + tool);
+				CraftTweakerAPI.logError("The recipe name already exists: " + name.toString() + ". Or a recipe with that input and tool already exists: " + input + " " + tool);
 			}
 		}
 
