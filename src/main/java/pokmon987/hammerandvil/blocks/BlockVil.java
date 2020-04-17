@@ -23,6 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pokmon987.hammerandvil.HAVConfig;
 import pokmon987.hammerandvil.HammerAndVil;
 import pokmon987.hammerandvil.recipes.VilRecipes;
 import pokmon987.hammerandvil.tileentity.TileVil;
@@ -164,7 +165,16 @@ public class BlockVil extends Block {
 					worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, 1.5F);
 					//If the hits is equal to the current stack's requirement, it replaces the item with the result
 					if (hits.getCurrentHits() >= requiredHits) {
-						tile.getInventory().setStackInSlot(0, VilRecipes.getVilResult(stack, hand));
+						if (!HAVConfig.General.dropOnCraft) {
+							tile.getInventory().setStackInSlot(0, VilRecipes.getVilResult(stack, hand));
+						} else {
+							tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+							EntityItem entity = new EntityItem(worldIn, pos.getX()+0.5D, pos.getY()+0.5D, pos.getZ()+0.5D, VilRecipes.getVilResult(stack, hand));
+							entity.motionX = 0;
+							entity.motionY = 0;
+							entity.motionZ = 0;
+							worldIn.spawnEntity(entity);
+						}
 						worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.8F, 1.9F);
 						worldIn.notifyBlockUpdate(pos, worldIn.getBlockState(pos), worldIn.getBlockState(pos), 1);
 						hits.resetHits();

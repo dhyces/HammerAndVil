@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
+import pokmon987.hammerandvil.HAVConfig;
 import pokmon987.hammerandvil.HammerAndVil;
 import pokmon987.hammerandvil.blocks.ModBlocks;
 import pokmon987.hammerandvil.items.ModItems;
@@ -20,8 +21,9 @@ public class ModRecipes {
 	ShapedOreRecipe hammer = new ShapedOreRecipe(new ResourceLocation(HammerAndVil.MODID + "hammer"), new ItemStack(ModItems.itemHammer));
 	
 	public static void init() {
-		VilRecipes.registerRecipes();
-		
+		if (HAVConfig.General.includedRecipes) {
+			VilRecipes.registerRecipes();
+		}
 	}
 	
 	@SubscribeEvent

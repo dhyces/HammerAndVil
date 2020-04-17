@@ -25,9 +25,22 @@ public class VilRecipes {
 	}
 	
 	public static void registerRecipes() {
-		addVilRecipe(HammerAndVil.MODID + ":blackConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLACK.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLACK.getMetadata()), 3.0F, ItemStack.EMPTY);
-		addVilRecipe(HammerAndVil.MODID + ":blueConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLUE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLUE.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":whiteConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.WHITE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.WHITE.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":orangeConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.ORANGE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.ORANGE.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":magentaConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.MAGENTA.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.MAGENTA.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":lightBlueConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.LIGHT_BLUE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.LIGHT_BLUE.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":yellowConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.YELLOW.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.YELLOW.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":limeConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.LIME.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.LIME.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":pinkConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.PINK.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.PINK.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":grayConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.GRAY.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.GRAY.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":lightGrayConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.SILVER.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.SILVER.getMetadata()), 3.0F, ItemStack.EMPTY);
 		addVilRecipe(HammerAndVil.MODID + ":cyanConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.CYAN.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.CYAN.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":purpleConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.PURPLE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.PURPLE.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":blueConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLUE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLUE.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":brownConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BROWN.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BROWN.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":greenConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.GREEN.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.GREEN.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":redConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.RED.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.RED.getMetadata()), 3.0F, ItemStack.EMPTY);
+		addVilRecipe(HammerAndVil.MODID + ":blackConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLACK.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLACK.getMetadata()), 3.0F, ItemStack.EMPTY);
 	}
 	
 	public static void addVilRecipe(String name, ItemStack output, ItemStack input, Float hits, @Nullable ItemStack tool) {
