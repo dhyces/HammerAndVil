@@ -47,7 +47,7 @@ public class VilRecipes {
 	
 	public static String getNameForRecipe(ItemStack input, ItemStack tool) {
 		for (Entry<String, ItemStack> entry : nameInList.entrySet()) {
-			if (input.getItem() == entry.getValue().getItem() && input.getMetadata() == entry.getValue().getMetadata() && input.getCount() == entry.getValue().getCount()) {
+			if (ItemStack.areItemStacksEqual(input, entry.getValue())) {
 				for (Entry<String, ItemStack> entry2 : toolList.entrySet()) {
 					ItemStack mappedTool = entry2.getValue() != ItemStack.EMPTY ? entry2.getValue() : new ItemStack(ModItems.itemHammer);
 					if (entry.getKey() == entry2.getKey() && MetaCheck.hasEqualMeta(tool, mappedTool)) {
