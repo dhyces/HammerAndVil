@@ -49,7 +49,7 @@ public class CTVilRecipe {
 			boolean result = new VilRecipes().getNameOutList().containsKey(name.toString());
 			ItemStack toolStack = CraftTweakerMC.getItemStack(tool);
 			ItemStack requiredTool = VilRecipes.getToolForRecipe(toolStack, CraftTweakerMC.getItemStack(input));
-			if ((result == false || !MetaCheck.hasEqualMeta(toolStack, requiredTool)) && input.getAmount() == 1) {
+			if ((result == false || !MetaCheck.hasEqualMeta(toolStack, requiredTool))) {
 				if (tool instanceof IOreDictEntry) {
 					for (int i = 0; i < tool.getItems().size(); i++) {
 						VilRecipes.addVilRecipe(name.toString() + i, output, CraftTweakerMC.getItemStack(input), hits, CraftTweakerMC.getItemStack(tool.getItems().get(i)));

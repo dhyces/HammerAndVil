@@ -96,7 +96,7 @@ public class TileVil extends TileEntity {
 
 		@Override
 		public int getSlotLimit(int slot) {
-			return 1;
+			return 8;
 		}
 		
 		@Override

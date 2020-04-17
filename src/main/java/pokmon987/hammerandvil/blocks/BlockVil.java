@@ -103,13 +103,17 @@ public class BlockVil extends Block {
 			TileVil tile = (TileVil)worldIn.getTileEntity(pos);
 			if (tile != null) {
 				ItemStack stack = tile.getInventory().getStackInSlot(0);
-				if (stack.isEmpty() && !handItem.isEmpty()) {
+				// if stack is less that the max slot size and hand is equal to the current stack
+				if (stack.getCount() < tile.getInventory().getSlotLimit(0) && !handItem.isEmpty() && ((MetaCheck.hasEqualMeta(handItem, stack) && ItemStack.areItemStackTagsEqual(stack, handItem)) || stack.isEmpty()) && stack.getMaxStackSize() > 1) {
 					ItemStack itemInv = handItem.copy();
 					itemInv.setCount(1);
-					tile.getInventory().setStackInSlot(0, itemInv);
+					// increase count by one
+					tile.getInventory().insertItem(0, itemInv, false);
+					tile.hits.resetHits();
 					handItem.setCount(handItem.getCount()-1);
 					worldIn.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, 1.0F);
 					worldIn.notifyBlockUpdate(pos, state, state, 1);
+					// else if player is also holding shift/crouching, remove the whole stack and spawn it in the world
 				} else {
 					EntityItem entity = new EntityItem(worldIn, pos.getX()+0.5D, pos.getY()+0.9D, pos.getZ()+0.5D, stack.copy());
 					entity.motionX = 0;
@@ -120,8 +124,8 @@ public class BlockVil extends Block {
 					tile.hits.resetHits();
 					worldIn.notifyBlockUpdate(pos, state, state, 1);
 				}
+				tile.markDirty();
 			}
-			tile.markDirty();
 		}
 		return true;
 	}

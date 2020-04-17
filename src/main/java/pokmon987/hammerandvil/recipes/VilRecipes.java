@@ -47,7 +47,7 @@ public class VilRecipes {
 	
 	public static String getNameForRecipe(ItemStack input, ItemStack tool) {
 		for (Entry<String, ItemStack> entry : nameInList.entrySet()) {
-			if (input.getItem() == entry.getValue().getItem() && input.getMetadata() == entry.getValue().getMetadata()) {
+			if (input.getItem() == entry.getValue().getItem() && input.getMetadata() == entry.getValue().getMetadata() && input.getCount() == entry.getValue().getCount()) {
 				for (Entry<String, ItemStack> entry2 : toolList.entrySet()) {
 					ItemStack mappedTool = entry2.getValue() != ItemStack.EMPTY ? entry2.getValue() : new ItemStack(ModItems.itemHammer);
 					if (entry.getKey() == entry2.getKey() && MetaCheck.hasEqualMeta(tool, mappedTool)) {
@@ -90,7 +90,7 @@ public class VilRecipes {
 		for (Entry<String, ItemStack> toolEntry : toolList.entrySet()) {
 			for (Entry<String, ItemStack> entry : nameInList.entrySet()) {
 				ItemStack mappedTool = toolEntry.getValue() != ItemStack.EMPTY ? toolEntry.getValue() : new ItemStack(ModItems.itemHammer);
-				if (input.getItem() == entry.getValue().getItem() && input.getMetadata() == entry.getValue().getMetadata() && toolEntry.getKey() == entry.getKey() && MetaCheck.hasEqualMeta(handTool, mappedTool)) {
+				if (ItemStack.areItemStacksEqual(input, entry.getValue()) && toolEntry.getKey() == entry.getKey() && MetaCheck.hasEqualMeta(handTool, mappedTool)) {
 					for (Entry<String, ItemStack> entry2 : nameOutList.entrySet()) {
 						//System.out.println("entry 1: " + entry + ". Entry 2: " + entry2);
 						if (entry.getKey() == entry2.getKey() && entry.getKey() == toolEntry.getKey() && entry2.getKey() == toolEntry.getKey()) {
