@@ -10,14 +10,13 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import pokmon987.hammerandvil.HAVConfig;
 import pokmon987.hammerandvil.HammerAndVil;
-import pokmon987.hammerandvil.blocks.ModBlocks;
 import pokmon987.hammerandvil.items.ModItems;
 import pokmon987.hammerandvil.recipes.VilRecipes;
 
 @Mod.EventBusSubscriber(modid = HammerAndVil.MODID)
 public class ModRecipes {
 	
-	ShapedOreRecipe vil = new ShapedOreRecipe(new ResourceLocation(HammerAndVil.MODID + "vil"), new ItemStack(ModBlocks.itemVil));
+	ShapedOreRecipe vil = new ShapedOreRecipe(new ResourceLocation(HammerAndVil.MODID + "vil"), new ItemStack(ModItems.itemVil));
 	ShapedOreRecipe hammer = new ShapedOreRecipe(new ResourceLocation(HammerAndVil.MODID + "hammer"), new ItemStack(ModItems.itemHammer));
 	
 	public static void init() {

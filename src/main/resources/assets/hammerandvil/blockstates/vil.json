@@ -1,15 +1,12 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "textures": {
-            "all": "minecraft:blocks/concrete_white"
-        }
+      "textures": {"#none": "hammerandvil:blocks/vil"}
     },
     "variants": {
-		"normal": {"model": "hammerandvil:vil"},
-        "facing=south": {"model": "hammerandvil:vil"},
-		"facing=west": {"model": "hammerandvil:vil","y":90},
-		"facing=north": {"model": "hammerandvil:vil","y":180},
-		"facing=east": {"model": "hammerandvil:vil","y":270}
-    }
+    "facing=south": {"model": "hammerandvil:vil.obj"},
+		"facing=west": {"model": "hammerandvil:vil.obj","y":90},
+		"facing=north": {"model": "hammerandvil:vil.obj","y":180},
+		"facing=east": {"model": "hammerandvil:vil.obj","y":270}
+  }
 }

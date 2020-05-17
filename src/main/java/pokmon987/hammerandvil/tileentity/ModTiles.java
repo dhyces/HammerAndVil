@@ -7,6 +7,6 @@ import pokmon987.hammerandvil.HammerAndVil;
 public class ModTiles {
 	
 	public static void init() {
-		GameRegistry.registerTileEntity(TileVil.class, new ResourceLocation(HammerAndVil.MODID + "vil"));
+		GameRegistry.registerTileEntity(TileVil.class, new ResourceLocation(HammerAndVil.MODID, "vil"));
 	}
 }

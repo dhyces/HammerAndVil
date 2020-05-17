@@ -17,12 +17,11 @@ public class VilRecipeCategory implements IRecipeCategory<VilRecipeWrapper>{
 	private final IDrawable icon;
 	
 	public VilRecipeCategory(IGuiHelper guiHelper) {
-		background = guiHelper.createDrawable(new ResourceLocation(HammerAndVil.MODID, "textures/gui/jei_vil.png"), 0, 0, 80, 34);
-		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.vil));
+		this.background = guiHelper.createDrawable(new ResourceLocation(HammerAndVil.MODID, "textures/gui/jei_vil.png"), 0, 0, 80, 34);
+		this.icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.vil));
 	}
 	@Override
 	public String getUid() {
-		// TODO Auto-generated method stub
 		return HammerAndVil.MODID + ".vil";
 	}
 
@@ -38,22 +37,23 @@ public class VilRecipeCategory implements IRecipeCategory<VilRecipeWrapper>{
 
 	@Override
 	public IDrawable getBackground() {
-		return background;
+		return this.background;
 	}
 	
 	@Override
 	public IDrawable getIcon() {
-		return icon;
+		return this.icon;
 	}
 	
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, VilRecipeWrapper recipeWrapper, IIngredients ingredients) {
 		IGuiItemStackGroup itemsGroup = recipeLayout.getItemStacks();
 		
-		itemsGroup.init(0, true, 2, 15);
-		itemsGroup.init(1, false, 62, 14);
-		itemsGroup.set(ingredients);
-		itemsGroup.init(2, true, 31, 0);
+		itemsGroup.init(0, true, 0, 0);
+		itemsGroup.init(1, true, 17, 0);
+		itemsGroup.init(2, true, 8, 17);
+		itemsGroup.init(3, true, 35, -2); //Tool
+		itemsGroup.init(4, false, 61, 9); //Result
 		itemsGroup.set(ingredients);
 	}
 	

@@ -3,11 +3,14 @@ package pokmon987.hammerandvil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.obj.OBJModel.MaterialLibrary;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -25,6 +28,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
 		super.preInit(event);
+		OBJLoader.INSTANCE.addDomain(HammerAndVil.MODID);
 	}
 	
 	@Override
@@ -37,16 +41,15 @@ public class ClientProxy extends CommonProxy {
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent event) {
 		registerModel(ModItems.itemHammer);
-		registerBlockModel(ModBlocks.vil);
+		registerModel(Item.getItemFromBlock(ModBlocks.vil));
+		registerOBJ(new MaterialLibrary(), ModBlocks.vil.getRegistryName());
+	}
+	
+	public static void registerOBJ(MaterialLibrary matLib, ResourceLocation resource) {
+		new OBJModel(matLib, resource);
 	}
 	
 	public static void registerModel(Item item) {
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
-	}
-	
-	public static void registerBlockModel(Block block) {
-		Item item = Item.getItemFromBlock(block);
-		
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 }

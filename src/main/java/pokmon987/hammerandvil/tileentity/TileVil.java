@@ -1,22 +1,40 @@
 package pokmon987.hammerandvil.tileentity;
 
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import pokmon987.hammerandvil.HAVConfig.General;
 import pokmon987.hammerandvil.util.HitHandler;
 
 public class TileVil extends TileEntity {
 	
-	private VilInventoryHandler inventory = new VilInventoryHandler(1);
+	private VilInventoryHandler inventory = new VilInventoryHandler(3);
 	public HitHandler hits = new HitHandler();
 	private LastHitTool lastHit = new LastHitTool();
 	
 	public IItemHandlerModifiable getInventory() {
 		return this.inventory;
+	}
+	
+	public void setAllStacksEmpty() {
+		getInventory().setStackInSlot(0, ItemStack.EMPTY);
+		getInventory().setStackInSlot(1, ItemStack.EMPTY);
+		getInventory().setStackInSlot(2, ItemStack.EMPTY);
+	}
+	
+	public NonNullList<ItemStack> getAllStacks() {
+		NonNullList<ItemStack> inventory = NonNullList.create();
+		if (getInventory().getStackInSlot(0).isEmpty()) {return null;}
+		inventory.add(getInventory().getStackInSlot(0));
+		if (!getInventory().getStackInSlot(1).isEmpty()) {inventory.add(getInventory().getStackInSlot(1));}
+		if (!getInventory().getStackInSlot(2).isEmpty()) {inventory.add(getInventory().getStackInSlot(2));}
+		return inventory;
 	}
 	
 	public LastHitTool getToolHandler() {
@@ -26,26 +44,46 @@ public class TileVil extends TileEntity {
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		if (tag.hasKey("item") && tag.hasKey("hits") && tag.hasKey("tool")) {
-			this.getInventory().setStackInSlot(0, new ItemStack(tag.getCompoundTag("item")));
-			this.getToolHandler().set(new ItemStack(tag.getCompoundTag("tool")));
+//		if (tag.hasKey("Items") && tag.hasKey("hits") && tag.hasKey("tool")) {
+//			this.getInventory().setStackInSlot(0, new ItemStack(tag.getCompoundTag("item")));
+//			this.getToolHandler().set(new ItemStack(tag.getCompoundTag("tool")));
+//			this.hits.setCurrentHits(tag.getFloat("hits"));
+		if (tag.hasKey("hits")) {
 			this.hits.setCurrentHits(tag.getFloat("hits"));
-		} else {
-			this.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+			
 		}
+		if (tag.hasKey("tool")) {
+			this.getToolHandler().set(new ItemStack(tag.getCompoundTag("tool")));
+		}
+		if (tag.hasKey("Items")) {
+			NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+			ItemStackHelper.loadAllItems(tag, stacks);
+			this.getInventory().setStackInSlot(0, stacks.get(0));
+			this.getInventory().setStackInSlot(1, stacks.get(1));
+			this.getInventory().setStackInSlot(2, stacks.get(2));
+			return;
+		}
+		if (tag.hasKey("item") && !tag.hasKey("Items")) {
+			this.getInventory().setStackInSlot(0, new ItemStack(tag.getCompoundTag("item")));
+			return;
+		}
+		this.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+		this.getInventory().setStackInSlot(1, ItemStack.EMPTY);
+		this.getInventory().setStackInSlot(2, ItemStack.EMPTY);
 	}
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		ItemStack stack = this.getInventory().getStackInSlot(0);
+		NonNullList<ItemStack> stacks = NonNullList.create();
+		stacks.add(this.getInventory().getStackInSlot(0));
+		stacks.add(this.getInventory().getStackInSlot(1));
+		stacks.add(this.getInventory().getStackInSlot(2));
 		ItemStack lastTool = this.getToolHandler().get();
 		Float hits = this.hits.getCurrentHits();
-		if (!stack.isEmpty()) {
-			NBTTagCompound compound = new NBTTagCompound();
+		if (!stacks.isEmpty()) {
 			NBTTagCompound compoundTool = new NBTTagCompound();
-			stack.writeToNBT(compound);
-			tag.setTag("item", compound);
+			ItemStackHelper.saveAllItems(tag, stacks);
 			lastTool.writeToNBT(compoundTool);
 			tag.setTag("tool", compoundTool);
 			tag.setFloat("hits", hits);
@@ -91,11 +129,12 @@ public class TileVil extends TileEntity {
 		
 		@Override
 		public int getSlots() {
-			return 1;
+			return 3;
 		}
 
 		@Override
 		public int getSlotLimit(int slot) {
+			//General.stackSize != 0 ? General.stackSize : 
 			return 8;
 		}
 		
