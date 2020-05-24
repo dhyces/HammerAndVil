@@ -1,53 +1,54 @@
 package pokmon987.hammerandvil.recipes;
 
-import net.minecraft.inventory.InventoryCrafting;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.util.NonNullList;
 
-public class VilRecipe implements IRecipe {
+public class VilRecipe {
 
-	@Override
-	public IRecipe setRegistryName(ResourceLocation name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ResourceLocation getRegistryName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Class<IRecipe> getRegistryType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean matches(InventoryCrafting inv, World worldIn) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean canFit(int width, int height) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ItemStack getRecipeOutput() {
-		// TODO Auto-generated method stub
-		return null;
+	private final String name;
+	private final ItemStack output;
+	private final NonNullList<NonNullList<ItemStack>> inputs;
+	private final int hits;
+	private final List<ItemStack> tool;
+	
+	public VilRecipe(String nameIn, ItemStack outputIn, NonNullList<NonNullList<ItemStack>> inputsIn, int hitsIn, ItemStack toolIn) {
+		this(nameIn, outputIn, inputsIn, hitsIn, addToAList(toolIn));
 	}
 	
+	public VilRecipe(String nameIn, ItemStack outputIn, NonNullList<NonNullList<ItemStack>> inputsIn, int hitsIn, List<ItemStack> toolIn) {
+		this.name = nameIn;
+		this.output = outputIn;
+		this.inputs = inputsIn;
+		this.hits = hitsIn;
+		this.tool = toolIn;
+	}
+	
+	public static List<ItemStack> addToAList(ItemStack stack) {
+		List<ItemStack> stackList = new ArrayList<>();
+		stackList.add(stack);
+		return stackList;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public ItemStack getOutput() {
+		return this.output;
+	}
+	
+	public NonNullList<NonNullList<ItemStack>> getInputs() {
+		return this.inputs;
+	}
+	
+	public int getHits() {
+		return this.hits;
+	}
+	
+	public List<ItemStack> getTool() {
+		return this.tool;
+	}
 }

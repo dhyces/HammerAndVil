@@ -8,18 +8,16 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-import com.sun.jna.platform.win32.Ole32;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import pokmon987.hammerandvil.HammerAndVil;
 import pokmon987.hammerandvil.items.ModItems;
 import pokmon987.hammerandvil.util.EqualCheck;
-import scala.collection.mutable.ArrayBuilder.ofBoolean;
 
 public class VilRecipes {
 	
@@ -52,12 +50,12 @@ public class VilRecipes {
 		addVilRecipe(HammerAndVil.MODID + ":blackConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.BLACK.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.BLACK.getMetadata()), 3.0F, ItemStack.EMPTY);
 	}
 	/**This is used if the input is an ore dictionary entry*/
-//	public static void addVilRecipe(String name, ItemStack output, String input, Float hits, @Nullable ItemStack tool) {
-//		ItemStack toolIn = tool.isEmpty() ? new ItemStack(ModItems.itemHammer) : tool;
-//		List<ItemStack> list = NonNullList.create();
-//		list.add(toolIn);
-//		addVilRecipe(name, output, input, hits, list);
-//	}
+	public static void addVilRecipe(String name, ItemStack output, String input, Float hits, @Nullable ItemStack tool) {
+		ItemStack toolIn = tool.isEmpty() ? new ItemStack(ModItems.itemHammer) : tool;
+		List<ItemStack> list = NonNullList.create();
+		list.add(toolIn);
+		addVilRecipe(name, output, OreDictionary.getOres(input), hits, list);
+	}
 	
 	public static void addVilRecipe(String name, ItemStack output, ItemStack input, Float hits, @Nullable ItemStack tool) {
 		ItemStack toolIn = tool.isEmpty() ? new ItemStack(ModItems.itemHammer) : tool;
