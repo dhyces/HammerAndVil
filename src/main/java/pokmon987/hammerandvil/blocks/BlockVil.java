@@ -179,13 +179,13 @@ public class BlockVil extends Block {
 			LastHitTool lastTool = tile.getToolHandler();
 			hits.setCurrentHits(lastTool.get() == null || EqualCheck.areEqual(hand, lastTool.get()) ? hits.getCurrentHits() : hits.resetHits());
 			NonNullList<ItemStack> stacks = tile.getAllStacks();
-			String recipeName = VilRecipes.getNameForRecipe(stacks, hand);
-			if (!VilRecipes.getVilResultByName(recipeName).isEmpty() && !VilRecipes.getToolForRecipe(hand, stacks).isEmpty()) {
-				ItemStack requiredTool = VilRecipes.getToolForRecipe(hand, stacks);
-				if (hand.getItem() == requiredTool.getItem() && EqualCheck.areEqual(hand, requiredTool)) {
+			String recipeName = VilRecipes.getName(stacks, hand);
+			if (!VilRecipes.getResult(recipeName).isEmpty()) {
+				ItemStack requiredTool = VilRecipes.compareTool(recipeName, hand);
+				if (EqualCheck.areEqual(hand, requiredTool)) {
 					setBlockUnbreakable();
 					lastTool.set(hand.copy());
-					Float requiredHits = VilRecipes.getHitsRequiredByName(recipeName);
+					int requiredHits = VilRecipes.getHits(recipeName);
 					//If it's not empty, the hits variable increases by 1.0F
 					hits.increaseHitUntilPoint(requiredHits);
 					//System.out.println("The result was not empty! The number of hits is at: " + hits.getCurrentHits());
@@ -193,12 +193,12 @@ public class BlockVil extends Block {
 					//If the hits is equal to the current stack's requirement, it replaces the item with the result
 					if (hits.getCurrentHits() >= requiredHits) {
 						if (!HAVConfig.General.dropOnCraft) {
-							tile.getInventory().setStackInSlot(0, VilRecipes.getVilResultByName(recipeName));
+							tile.getInventory().setStackInSlot(0, VilRecipes.getResult(recipeName));
 							tile.getInventory().setStackInSlot(1, ItemStack.EMPTY);
 							tile.getInventory().setStackInSlot(2, ItemStack.EMPTY);
 						} else {
 							tile.setAllStacksEmpty();
-							EntityItem entity = new EntityItem(worldIn, pos.getX()+0.5D, pos.getY()+1D, pos.getZ()+0.5D, VilRecipes.getVilResultByName(recipeName));
+							EntityItem entity = new EntityItem(worldIn, pos.getX()+0.5D, pos.getY()+1D, pos.getZ()+0.5D, VilRecipes.getResult(recipeName));
 							entity.motionX = 0;
 							entity.motionY = 0;
 							entity.motionZ = 0;

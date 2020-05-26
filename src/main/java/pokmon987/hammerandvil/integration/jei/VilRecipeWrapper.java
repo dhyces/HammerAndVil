@@ -22,7 +22,7 @@ public class VilRecipeWrapper implements IRecipeWrapper {
 	private final float hits;
 	private final IJeiHelpers helpers;
 	
-	public VilRecipeWrapper(NonNullList<ItemStack> inputs, ItemStack output, List<ItemStack> tool, Float hits, IJeiHelpers helpers) {
+	public VilRecipeWrapper(NonNullList<ItemStack> inputs, ItemStack output, List<ItemStack> tool, int hits, IJeiHelpers helpers) {
 		for (int i = 0; i < 3; i++) {
 			if (i < inputs.size()) {
 				this.inputs.add(inputs.get(i));

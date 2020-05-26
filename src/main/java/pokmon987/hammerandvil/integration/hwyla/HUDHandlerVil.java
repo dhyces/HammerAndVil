@@ -35,9 +35,9 @@ public class HUDHandlerVil implements IWailaDataProvider {
 		
 		NBTTagCompound lastTool = accessor.getNBTData().getCompoundTag("tool");
 		short hitsTag = (short)accessor.getNBTData().getFloat("hits");
-		ItemStack result = currentItem != 0.0F ? VilRecipes.getVilResult(items, accessor.getPlayer().getHeldItemMainhand()) : ItemStack.EMPTY;
-		String recipeName = VilRecipes.getNameForRecipe(items, accessor.getPlayer().getHeldItemMainhand());
-		float hitsTotalF = VilRecipes.getHitsRequiredByName(recipeName) != null ? (float)VilRecipes.getHitsRequiredByName(recipeName) : 0;
+		String recipeName = VilRecipes.getName(items, accessor.getPlayer().getHeldItemMainhand());
+		ItemStack result = currentItem != 0.0F ? VilRecipes.getResult(recipeName) : ItemStack.EMPTY;
+		int hitsTotalF = VilRecipes.getHits(recipeName);
 		short hitsTotal = (short)hitsTotalF;
 		String renderString = "";
 		String renderUnderString = "";

@@ -5,32 +5,32 @@ public class HitHandler {
 	 * This needs to get the hits from the stack, but there aren't any stacks in here
 	 * 
 	 */
-	private Float hits = 0.0F;
+	private int hits = 0;
 	
 	public HitHandler() {
 		
 	}
 	
-	public Float setCurrentHits(Float hitFloat) {
-		return this.hits = hitFloat;
+	public int setCurrentHits(int hit) {
+		return this.hits = hit;
 	}
 	
-	public Float getCurrentHits() {
+	public int getCurrentHits() {
 		return this.hits;
 	}
 	
-	public Float increaseHitUntilPoint(Float maxFloat) {
-		if (this.hits < maxFloat) {
+	public int increaseHitUntilPoint(int max) {
+		if (this.hits < max) {
 			return this.increaseHit();
 		}
 		return this.hits;
 	}
 	
-	public Float increaseHit() {
+	public int increaseHit() {
 		return this.hits++;
 	}
 	
-	public Float resetHits() {
-		return this.hits = 0.0F;
+	public int resetHits() {
+		return this.hits = 0;
 	}
 }

@@ -10,15 +10,15 @@ public class VilRecipe {
 
 	private final String name;
 	private final ItemStack output;
-	private final NonNullList<NonNullList<ItemStack>> inputs;
+	private final NonNullList<ItemStack> inputs;
 	private final int hits;
 	private final List<ItemStack> tool;
 	
-	public VilRecipe(String nameIn, ItemStack outputIn, NonNullList<NonNullList<ItemStack>> inputsIn, int hitsIn, ItemStack toolIn) {
+	public VilRecipe(String nameIn, ItemStack outputIn, NonNullList<ItemStack> inputsIn, int hitsIn, ItemStack toolIn) {
 		this(nameIn, outputIn, inputsIn, hitsIn, addToAList(toolIn));
 	}
 	
-	public VilRecipe(String nameIn, ItemStack outputIn, NonNullList<NonNullList<ItemStack>> inputsIn, int hitsIn, List<ItemStack> toolIn) {
+	public VilRecipe(String nameIn, ItemStack outputIn, NonNullList<ItemStack> inputsIn, int hitsIn, List<ItemStack> toolIn) {
 		this.name = nameIn;
 		this.output = outputIn;
 		this.inputs = inputsIn;
@@ -40,7 +40,7 @@ public class VilRecipe {
 		return this.output;
 	}
 	
-	public NonNullList<NonNullList<ItemStack>> getInputs() {
+	public NonNullList<ItemStack> getInputs() {
 		return this.inputs;
 	}
 	

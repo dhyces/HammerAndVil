@@ -19,6 +19,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 import pokmon987.hammerandvil.HammerAndVil;
+import pokmon987.hammerandvil.recipes.VilRecipe;
 import pokmon987.hammerandvil.recipes.VilRecipes;
 import pokmon987.hammerandvil.util.EqualCheck;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -29,43 +30,58 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class CTVilRecipe {
 	
 	@ZenMethod
-	public static void addRecipe(String name, IItemStack output, IIngredient[] inputs, Float hits, @Nullable IIngredient tool) {
+	public static void addRecipe(String name, IItemStack output, IIngredient[] inputs, int hits, @Nullable IIngredient tool) {
 		CraftTweaker.LATE_ACTIONS.add(new Add(name, CraftTweakerMC.getItemStack(output), inputs, hits, tool));
 	}
 	
 	private static class Add implements IAction {
 		private final ResourceLocation name;
 		private final ItemStack output;
-		private final NonNullList<NonNullList<ItemStack>> inputs;
-		private final Float hits;
+		private final IIngredient[] inputs;
+		private final int hits;
 		private final IIngredient tool;
 		
-		public Add(String name, ItemStack output, IIngredient[] inputs, Float hits, IIngredient tool) {
+		public Add(String name, ItemStack output, IIngredient[] inputs, int hits, IIngredient tool) {
 			this.name = new ResourceLocation(HammerAndVil.MODID, name);
 			this.output = output;
-			this.inputs = NonNullList.<NonNullList<ItemStack>>create();
-			for (int i = 0; i < inputs.length; i++) {
-				NonNullList<ItemStack> inputSlot = NonNullList.<ItemStack>create();
-				if (inputs[i] instanceof IOreDictEntry) {
-					ItemStack[] inputStacks = CraftTweakerMC.getItemStacks(inputs[i].getItemArray());
-					for (int j = 0; j < inputStacks.length; j++) {
-						inputSlot.add(inputStacks[j]);
-					}
-				} else {
-					inputSlot.add(CraftTweakerMC.getItemStack(inputs[i]));
-				}
-				this.inputs.add(inputSlot);
-			}
+			this.inputs = inputs;
+			if (inputs.length > 3) {CraftTweakerAPI.logError("Too many ingredients. The maximum is 3. The input is: " + inputs.length);}
+//			for (int i = 0; i <= 3; i++) {
+//				NonNullList<ItemStack> inputSlot = NonNullList.<ItemStack>create();
+//				if (inputs[i] instanceof IOreDictEntry) {
+//					ItemStack[] inputStacks = CraftTweakerMC.getItemStacks(inputs[i].getItemArray());
+//					for (int j = 0; j < inputStacks.length; j++) {
+//						inputSlot.add(inputStacks[j]);
+//					}
+//				} else {
+//					inputSlot.add(CraftTweakerMC.getItemStack(inputs[i]));
+//				}
+//				this.inputs.add(inputSlot);
+//			}
 			this.hits  = hits;
 			this.tool = tool;
 		}
 		
-		public boolean isApplicable(NonNullList<ItemStack> inputsIn, ItemStack... stacks) {
-			boolean result = new VilRecipes().getNameOutList().containsKey(name.toString());
-			System.out.println(result);
-			for (int i = 0; i < stacks.length; i++) {
-				ItemStack requiredTool = VilRecipes.getToolForRecipe(stacks[i], inputsIn);
-				if (!result && requiredTool.isEmpty()) {
+//		private boolean isApplicable(String nameIn, ItemStack... stacks) {
+//			boolean result = true;
+//			for (VilRecipe recipe : VilRecipes.recipes) {
+//				if (recipe.getTool()) {
+//					
+//				}
+//			}
+//			boolean result = new VilRecipes().getNameOutList().containsKey(name.toString());
+//			for (int i = 0; i < stacks.length; i++) {
+//				ItemStack requiredTool = VilRecipes.compareTool(stacks[i], nameIn);
+//				if (!result && requiredTool.isEmpty()) {
+//					return true;
+//				}
+//			}
+//			return false;
+//		}
+		
+		private boolean areAnyOre(IIngredient[] inputArray) {
+			for (int i = 0; i < inputArray.length; i++) {
+				if (inputArray[i] instanceof IOreDictEntry) {
 					return true;
 				}
 			}
@@ -74,9 +90,9 @@ public class CTVilRecipe {
 		
 		@Override
 		public void apply() {
-			
+			if (this.inputs.length > 3) {return;}
 			ItemStack[] toolStack = new ItemStack[1];
-			NonNullList<ItemStack> inputStacks = NonNullList.<ItemStack>create();
+//			NonNullList<ItemStack> inputStacks = NonNullList.<ItemStack>create();
 			
 			if (tool instanceof IOreDictEntry) {
 				toolStack = CraftTweakerMC.getItemStacks(tool.getItemArray());
@@ -84,27 +100,61 @@ public class CTVilRecipe {
 				toolStack[0] = CraftTweakerMC.getItemStack(tool);
 			}
 			
-			for (int j = 0; j < 3; j++) {
-				if (inputs.get(j).size() > 1) {
-					
-				} else {
-					inputStacks.add(inputs.get(j).get(0));
+//			for (int j = 0; j < 3; j++) {
+//				if (inputs.get(j).size() > 1) {
+//					
+//				} else {
+//					inputStacks.add(inputs.get(j).get(0));
+//				}
+//			}
+			
+			if (areAnyOre(this.inputs)) {
+				IIngredient[] inputArray = new IIngredient[3];
+				for (int i = 0; i < this.inputs.length; i++) {
+					inputArray[i] = this.inputs[i];
 				}
-			}
-			
-			
-				
-			
-			if ((!EqualCheck.areEqual(toolStack[i], requiredTool))) {
-				for (ItemStack input : inputs) {
-					if (inputs instanceof IOreDictEntry) {
-						VilRecipes.addVilRecipe(name.toString(), output, inputs, hits, toolStack);
+				for (int i = 0; i < inputArray[0].getItemArray().length; i++) {
+					NonNullList<ItemStack> inputStacks = NonNullList.<ItemStack>create();
+					inputStacks.add(CraftTweakerMC.getItemStack(inputArray[0].getItemArray()[i]));
+					if (inputArray[1] != null) {
+					for (int j = 0; j < inputArray[1].getItemArray().length; j++) {
+						inputStacks.add(CraftTweakerMC.getItemStack(inputArray[1].getItemArray()[j]));
+						if (inputArray[2] != null) {
+						for (int k = 0; k <= inputArray[2].getItemArray().length; k++) {
+							inputStacks.add(CraftTweakerMC.getItemStack(inputArray[2].getItemArray()[k]));
+//							if (isApplicable(inputStacks, toolStack)) {
+								new VilRecipes().addVilRecipe(name.toString(), output, inputStacks, hits, toolStack);
+//							} else {
+//								CraftTweakerAPI.logError("The recipe name already exists: " + name.toString() + ". Or a recipe with that input and tool already exists: " + inputArray[2].getItemArray()[k].getDisplayName() + " " + tool);
+//							}
+						}
+						} else {
+//							if (isApplicable(inputStacks, toolStack)) {
+								new VilRecipes().addVilRecipe(name.toString(), output, inputStacks, hits, toolStack);
+//							} else {
+//								CraftTweakerAPI.logError("The recipe name already exists: " + name.toString() + ". Or a recipe with that input and tool already exists: " + inputArray[1].getItemArray()[j].getDisplayName() + " " + tool);
+//							}
+						}
+					}
 					} else {
-						VilRecipes.addVilRecipe(name.toString(), output, inputs, hits, toolStack);
+//						if (isApplicable(inputStacks, toolStack)) {
+							new VilRecipes().addVilRecipe(name.toString() + i, output, inputStacks, hits, toolStack);
+							inputStacks.forEach(action -> CraftTweakerAPI.logDefault(action.getDisplayName()));
+//						} else {
+//							CraftTweakerAPI.logError("The recipe name already exists: " + name.toString() + ". Or a recipe with that input and tool already exists: " + inputArray[0].getItemArray()[i].getDisplayName() + " " + tool);
+//						}
 					}
 				}
 			} else {
-				CraftTweakerAPI.logError("The recipe name already exists: " + name.toString() + ". Or a recipe with that input and tool already exists: " + inputs + " " + tool);
+				NonNullList<ItemStack> inputStacks = NonNullList.<ItemStack>create();
+				for (int i = 0; i < this.inputs.length; i++) {
+					inputStacks.add(CraftTweakerMC.getItemStack(this.inputs[i]));
+				}
+//				if (isApplicable(inputStacks, toolStack)) {
+					new VilRecipes().addVilRecipe(name.toString(), output, inputStacks, hits, toolStack);
+//				} else {
+//					CraftTweakerAPI.logError("The recipe name already exists: " + name.toString() + ". Or a recipe with that input and tool already exists: " + inputStacks + " " + tool);
+//				}
 			}
 		}
 

@@ -49,7 +49,7 @@ public class TileVil extends TileEntity {
 //			this.getToolHandler().set(new ItemStack(tag.getCompoundTag("tool")));
 //			this.hits.setCurrentHits(tag.getFloat("hits"));
 		if (tag.hasKey("hits")) {
-			this.hits.setCurrentHits(tag.getFloat("hits"));
+			this.hits.setCurrentHits(tag.getInteger("hits"));
 			
 		}
 		if (tag.hasKey("tool")) {
@@ -80,7 +80,7 @@ public class TileVil extends TileEntity {
 		stacks.add(this.getInventory().getStackInSlot(1));
 		stacks.add(this.getInventory().getStackInSlot(2));
 		ItemStack lastTool = this.getToolHandler().get();
-		Float hits = this.hits.getCurrentHits();
+		int hits = this.hits.getCurrentHits();
 		if (!stacks.isEmpty()) {
 			NBTTagCompound compoundTool = new NBTTagCompound();
 			ItemStackHelper.saveAllItems(tag, stacks);
