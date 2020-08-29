@@ -14,7 +14,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -27,11 +26,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokmon987.hammerandvil.HAVConfig;
 import pokmon987.hammerandvil.HammerAndVil;
-import pokmon987.hammerandvil.recipes.VilRecipes;
 import pokmon987.hammerandvil.tileentity.TileVil;
-import pokmon987.hammerandvil.tileentity.TileVil.LastHitTool;
 import pokmon987.hammerandvil.util.EqualCheck;
-import pokmon987.hammerandvil.util.HitHandler;
 
 public class BlockVil extends Block {
 	
@@ -114,7 +110,7 @@ public class BlockVil extends Block {
 					itemInv.setCount(1);
 					// increase count by one
 					tile.getInventory().insertItem(0, itemInv, false);
-					tile.hits.resetHits();
+					tile.hits = 0;
 					handItem.setCount(handItem.getCount()-1);
 					worldIn.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, 1.0F);
 					worldIn.notifyBlockUpdate(pos, state, state, 1);
@@ -123,7 +119,7 @@ public class BlockVil extends Block {
 					ItemStack itemInv = handItem.copy();
 					itemInv.setCount(1);
 					tile.getInventory().insertItem(1, itemInv, false);
-					tile.hits.resetHits();
+					tile.hits = 0;
 					handItem.setCount(handItem.getCount()-1);
 					worldIn.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, 1.0F);
 					worldIn.notifyBlockUpdate(pos, state, state, 1);
@@ -131,7 +127,7 @@ public class BlockVil extends Block {
 					ItemStack itemInv = handItem.copy();
 					itemInv.setCount(1);
 					tile.getInventory().insertItem(2, itemInv, false);
-					tile.hits.resetHits();
+					tile.hits = 0;
 					handItem.setCount(handItem.getCount()-1);
 					worldIn.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, 1.0F);
 					worldIn.notifyBlockUpdate(pos, state, state, 1);
@@ -158,10 +154,11 @@ public class BlockVil extends Block {
 						tile.getInventory().setStackInSlot(2, ItemStack.EMPTY);
 						worldIn.spawnEntity(entity3);
 					}
-					tile.hits.resetHits();
+					tile.hits = 0;
 					worldIn.notifyBlockUpdate(pos, state, state, 1);
 				}
 				tile.markDirty();
+				worldIn.notifyBlockUpdate(pos, state, state, 1);
 			}
 		}
 		return true;
@@ -170,67 +167,10 @@ public class BlockVil extends Block {
 	@Override
 	public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
 		if (!worldIn.isRemote) {
-			
-			if (this.blockHardness == -1.0F) {this.setHardness(3.0F);}
-			
-			ItemStack hand = playerIn.getHeldItemMainhand();
-			TileVil tile = (TileVil)worldIn.getTileEntity(pos);
-			HitHandler hits = tile.hits;
-			LastHitTool lastTool = tile.getToolHandler();
-			hits.setCurrentHits(lastTool.get() == null || EqualCheck.areEqual(hand, lastTool.get()) ? hits.getCurrentHits() : hits.resetHits());
-			NonNullList<ItemStack> stacks = tile.getAllStacks();
-			String recipeName = VilRecipes.getName(stacks, hand);
-			if (!VilRecipes.getResult(recipeName).isEmpty()) {
-				ItemStack requiredTool = VilRecipes.compareTool(recipeName, hand);
-				if (EqualCheck.areEqual(hand, requiredTool)) {
-					setBlockUnbreakable();
-					lastTool.set(hand.copy());
-					int requiredHits = VilRecipes.getHits(recipeName);
-					//If it's not empty, the hits variable increases by 1.0F
-					hits.increaseHitUntilPoint(requiredHits);
-					//System.out.println("The result was not empty! The number of hits is at: " + hits.getCurrentHits());
-					worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, 1.5F);
-					//If the hits is equal to the current stack's requirement, it replaces the item with the result
-					if (hits.getCurrentHits() >= requiredHits) {
-						if (!HAVConfig.General.dropOnCraft) {
-							tile.getInventory().setStackInSlot(0, VilRecipes.getResult(recipeName));
-							tile.getInventory().setStackInSlot(1, ItemStack.EMPTY);
-							tile.getInventory().setStackInSlot(2, ItemStack.EMPTY);
-						} else {
-							tile.setAllStacksEmpty();
-							EntityItem entity = new EntityItem(worldIn, pos.getX()+0.5D, pos.getY()+1D, pos.getZ()+0.5D, VilRecipes.getResult(recipeName));
-							entity.motionX = 0;
-							entity.motionY = 0;
-							entity.motionZ = 0;
-							worldIn.spawnEntity(entity);
-						}
-						worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.8F, 1.9F);
-						worldIn.notifyBlockUpdate(pos, worldIn.getBlockState(pos), worldIn.getBlockState(pos), 1);
-						hits.resetHits();
-						//add config option here to if damage item is onCraft then damage
-						if (hand.getMaxDamage() > 0) {
-							//if the hand item has a maxdamage that is over 0, damage the item by 1
-							hand.damageItem(1, playerIn);
-						} else if (hand.serializeNBT().hasKey("tag")) {
-							//if the hand item has an NBT key that is "tag", then it will damage the item by two points
-							//this is for Immersive Engineering tools, because of their tools being setup with subtypes
-							int damageAmount = hand.serializeNBT().getCompoundTag("tag").getInteger("Damage");
-							NBTTagCompound tag = new NBTTagCompound();
-							hand.writeToNBT(tag);
-							tag.getCompoundTag("tag").setInteger("Damage", damageAmount + 2);
-							hand.serializeNBT().merge(tag);
-						} else {
-							// if nothing else is true, then shrink the itemstack size by 1
-							hand.shrink(1);
-						}
-					}
-					if (playerIn.isCreative()) {
-						//This area was for setting up a way for the block to not be broken
-						
-					}
-				}
-			}
+			TileVil tile = (TileVil) worldIn.getTileEntity(pos);
+			tile.updateTileAfterHit(worldIn, pos, playerIn);
 		}
+		worldIn.notifyBlockUpdate(pos, worldIn.getBlockState(pos), worldIn.getBlockState(pos), 1);
 	}
 	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {

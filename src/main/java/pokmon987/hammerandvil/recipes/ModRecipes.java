@@ -11,7 +11,6 @@ import net.minecraftforge.registries.IForgeRegistry;
 import pokmon987.hammerandvil.HAVConfig;
 import pokmon987.hammerandvil.HammerAndVil;
 import pokmon987.hammerandvil.items.ModItems;
-import pokmon987.hammerandvil.recipes.VilRecipes;
 
 @Mod.EventBusSubscriber(modid = HammerAndVil.MODID)
 public class ModRecipes {
@@ -21,7 +20,7 @@ public class ModRecipes {
 	
 	public static void init() {
 		if (HAVConfig.General.includedRecipes) {
-			VilRecipes.registerRecipes();
+//			VilRecipes.registerRecipes();
 		}
 	}
 	

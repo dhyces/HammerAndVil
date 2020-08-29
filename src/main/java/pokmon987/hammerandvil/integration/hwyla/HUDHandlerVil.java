@@ -31,14 +31,12 @@ public class HUDHandlerVil implements IWailaDataProvider {
 		TileVil tile = (TileVil)accessor.getTileEntity();
 		NonNullList<ItemStack> items = tile.getAllStacks();
 		float currentItem = accessor.getPlayer().getCooldownPeriod();
-		if (items == null) {return tooltip;}
+		if (items == null || tile.getInventory().currentRecipe == null) {return tooltip;}
 		
 		NBTTagCompound lastTool = accessor.getNBTData().getCompoundTag("tool");
 		short hitsTag = (short)accessor.getNBTData().getFloat("hits");
-		String recipeName = VilRecipes.getName(items, accessor.getPlayer().getHeldItemMainhand());
-		ItemStack result = currentItem != 0.0F ? VilRecipes.getResult(recipeName) : ItemStack.EMPTY;
-		int hitsTotalF = VilRecipes.getHits(recipeName);
-		short hitsTotal = (short)hitsTotalF;
+		ItemStack result = currentItem != 0.0F ? tile.getInventory().currentRecipe.getOutput() : ItemStack.EMPTY;
+		int hitsTotal = tile.getInventory().currentRecipe.getHits();
 		String renderString = "";
 		String renderUnderString = "";
 		
@@ -66,11 +64,12 @@ public class HUDHandlerVil implements IWailaDataProvider {
 			String name = inventory.get(3).getItem().getRegistryName().toString();
 			renderString += SpecialChars.getRenderString("waila.stack", "1", name, String.valueOf(inventory.get(3).getCount()), String.valueOf(inventory.get(3).getItemDamage()));
 		} else {renderString += SpecialChars.getRenderString("waila.stack", "2");}
+		short hitsCurrent = EqualCheck.areEqual(accessor.getPlayer().getHeldItemMainhand(), new ItemStack(lastTool)) ? hitsTag : 0;
 		if (hitsTotal > 0) {
-			short hitsCurrent = EqualCheck.areEqual(accessor.getPlayer().getHeldItemMainhand(), new ItemStack(lastTool)) ? hitsTag : 0;
+			
 			renderString += SpecialChars.getRenderString("waila.progress", String.valueOf(hitsCurrent), String.valueOf(hitsTotal));
 		}
-		if (!inventory.get(4).isEmpty() && !result.isEmpty()) {
+		if (!inventory.get(4).isEmpty() && !result.isEmpty() && hitsCurrent > 0) {
 			String name = inventory.get(4).getItem().getRegistryName().toString();
 			renderString += SpecialChars.getRenderString("waila.stack", "1", name, String.valueOf(inventory.get(4).getCount()), String.valueOf(inventory.get(4).getItemDamage()));
 		} else {renderString += SpecialChars.getRenderString("waila.stack", "2");}

@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class HammerAndVil {
 	public static final String MODID = "hammerandvil";
 	public static final String NAME = "HammerAndVil";
-	public static final String VERSION = "b0.5.0";
+	public static final String VERSION = "b0.8.0";
 	
 	@SidedProxy(clientSide = "pokmon987.hammerandvil.ClientProxy", serverSide = "pokmon987.hammerandvil.ServerProxy")
 	public static CommonProxy proxy;

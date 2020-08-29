@@ -3,14 +3,11 @@ package pokmon987.hammerandvil.util;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import pokmon987.hammerandvil.items.ModItems;
 
 public class EqualCheck {
-	
+	/* Just checks if the items are the same, and (if it has metadata) have the same metadata*/
 	public static boolean areEqual(ItemStack handTool, ItemStack requiredTool) {
-		if (handTool.getItem() == ModItems.itemHammer && handTool.getItem() == requiredTool.getItem()) {
-			return true;
-		} else if (handTool.getItem() == requiredTool.getItem()) {
+		if (handTool.getItem() == requiredTool.getItem()) {
 			if (!requiredTool.getHasSubtypes()) {
 				return true;
 			} else if (handTool.getMetadata() == requiredTool.getMetadata()) {

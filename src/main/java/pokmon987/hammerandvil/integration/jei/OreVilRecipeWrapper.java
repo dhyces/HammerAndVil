@@ -2,6 +2,7 @@ package pokmon987.hammerandvil.integration.jei;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mezz.jei.api.IJeiHelpers;
@@ -14,19 +15,18 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class VilRecipeWrapper implements IRecipeWrapper {
-
-	private final List<ItemStack> inputs = new ArrayList<>();
+public class OreVilRecipeWrapper implements IRecipeWrapper {
+	private final List<List<ItemStack>> inputs = new ArrayList<>();
 	private final List<ItemStack> tool = new ArrayList<>();
 	private final ItemStack output;
 	private final float hits;
 	private final IJeiHelpers helpers;
 	
-	public VilRecipeWrapper(NonNullList<ItemStack> inputs, ItemStack output, List<ItemStack> tool, int hits, IJeiHelpers helpers) {
+	public OreVilRecipeWrapper(NonNullList<NonNullList<ItemStack>> inputs, ItemStack output, List<ItemStack> tool, int hits, IJeiHelpers helpers) {
 		for (int i = 0; i < 3; i++) {
 			if (i < inputs.size()) {
 				this.inputs.add(inputs.get(i));
-			} else {this.inputs.add(ItemStack.EMPTY);}
+			} else {this.inputs.add(Arrays.asList(ItemStack.EMPTY));}
 		}
 		this.tool.addAll(tool);
 		this.output = output;
@@ -43,7 +43,7 @@ public class VilRecipeWrapper implements IRecipeWrapper {
 		ingredients.setOutput(VanillaTypes.ITEM, output);
 	}
 	
-	public List<ItemStack> getVilInputs() {
+	public List<List<ItemStack>> getVilInputs() {
 		return this.inputs;
 	}
 	

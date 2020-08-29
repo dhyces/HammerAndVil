@@ -14,8 +14,6 @@ import pokmon987.hammerandvil.tileentity.TileVil;
 @SideOnly(Side.CLIENT)
 public class RenderVil extends TileEntitySpecialRenderer<TileVil> {
 	
-	private ModelVil model = new ModelVil();
-	
 	@Override
 	public void render(TileVil te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		int dir = te.getBlockMetadata();

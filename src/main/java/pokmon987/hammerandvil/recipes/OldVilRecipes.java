@@ -11,10 +11,8 @@ import javax.annotation.Nullable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.OreIngredient;
 import pokmon987.hammerandvil.HammerAndVil;
 import pokmon987.hammerandvil.items.ModItems;
 import pokmon987.hammerandvil.util.EqualCheck;
@@ -89,11 +87,6 @@ public class OldVilRecipes {
 	
 	public static boolean checkNameExists(String name) {
 		return false;
-	}
-	
-	private static boolean compareNames(Ingredient inputs, Ingredient tool) {
-		if (inputs instanceof OreIngredient) {}
-		return true;
 	}
 	
 	public static String getNameForRecipe(NonNullList<ItemStack> inputs, ItemStack tool) {
