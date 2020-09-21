@@ -22,10 +22,6 @@ public class VilRecipes {
 	
 	public static List<IVilRecipe> recipes = new ArrayList<>();
 	
-	public static void registerRecipes() {
-		addVilRecipe(HammerAndVil.MODID + ":whiteConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.WHITE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.WHITE.getMetadata()), 3, ItemStack.EMPTY);
-	}
-	
 	public static void addVilRecipe(String name, ItemStack output, ItemStack input, int hits, ItemStack... tool) {
 		NonNullList<ItemStack> inputs = NonNullList.create();
 		inputs.add(input);
@@ -35,14 +31,6 @@ public class VilRecipes {
 	public static void addVilRecipe(String name, ItemStack output, NonNullList<ItemStack> inputs, int hits, ItemStack... tool) {
 		addVilRecipe(name, output, inputs, hits, Arrays.<ItemStack>asList(tool));
 	}
-	
-//	public void addVilRecipe(String name, ItemStack output, ItemStack input, int hits, ItemStack tool) {
-//		addVilRecipe(name, output, input, hits, tool);
-//	}
-//	
-//	public void addVilRecipe(String name, ItemStack output, ItemStack input, int hits, List<ItemStack> tool) {
-//		addVilRecipe(name, output, input, hits, tool);
-//	}
 	
 	public static void addVilRecipe(String name, ItemStack output, NonNullList<ItemStack> inputs, int hits, List<ItemStack> tool) {
 		List<ItemStack> toolIn = new ArrayList<>();

@@ -44,9 +44,6 @@ public class RenderVil extends TileEntitySpecialRenderer<TileVil> {
 		
 		ItemStack stack = getItem(te, 0);
 		
-		//GlStateManager.pushMatrix();
-		//model.render(x, y, z);
-		//GlStateManager.popMatrix();
 		if (!stack.isEmpty()) {
 			RenderHelper.enableStandardItemLighting();
 			GlStateManager.pushMatrix();
@@ -71,14 +68,14 @@ public class RenderVil extends TileEntitySpecialRenderer<TileVil> {
 					double translationVertical = 0;
 					
 					if (i == 0) {
-						translationSides = getItem(te, i).getItem() instanceof ItemBlock ? 0.45D : 0.55D;
+						translationSides = getItem(te, i).getItem() instanceof ItemBlock ? 0.40D : 0.53D;
 					}
 					if (i == 1) {
-						translationSides = getItem(te, i).getItem() instanceof ItemBlock ? -0.85D : -1.05D;
+						translationSides = getItem(te, i).getItem() instanceof ItemBlock ? -0.85D : -1.07D;
 					}
 					if (i == 2) {
-						translationSides = getItem(te, i).getItem() instanceof ItemBlock ? 0.55D : 0.45D;
-						translationVertical = -0.7D;
+						translationSides = getItem(te, i).getItem() instanceof ItemBlock ? 0.45D : 0.45D;
+						translationVertical = getItem(te, i).getItem() instanceof ItemBlock ? -0.7D : -0.9D;
 					}
 					GlStateManager.translate(translationSides, translationVertical, 0);
 					Minecraft.getMinecraft().getRenderItem().renderItem(getItem(te, i), TransformType.FIXED);

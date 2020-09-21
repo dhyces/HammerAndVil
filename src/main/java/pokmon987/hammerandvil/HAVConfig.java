@@ -37,7 +37,6 @@ public class HAVConfig {
 	
 	@SubscribeEvent
 	public static void OnConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
-		System.out.println(event.getConfigID());
 		if (event.getModID().equals(HammerAndVil.MODID)) {
 			ConfigManager.sync(HammerAndVil.MODID, Config.Type.INSTANCE);
 		}
