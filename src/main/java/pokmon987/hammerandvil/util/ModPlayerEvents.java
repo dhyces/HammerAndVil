@@ -17,15 +17,14 @@ public class ModPlayerEvents {
 	
 	@SubscribeEvent
 	public static void onBlockClickedEvent(PlayerInteractEvent.LeftClickBlock event) {
-		World worldIn = event.getWorld();
 		EntityPlayer playerIn = event.getEntityPlayer();
-		BlockPos pos = event.getPos();
-		TileVil tile = (TileVil)worldIn.getTileEntity(pos);
-		IBlockState blockState = worldIn.getBlockState(pos);
-		
 		if (VilRecipes.isTool(event.getItemStack()) && playerIn.isCreative()) {
+			BlockPos pos = event.getPos();
+			World worldIn = event.getWorld();
+			IBlockState blockState = worldIn.getBlockState(pos);
 			if (blockState.getBlock().getClass() == BlockVil.class) {
 				if (worldIn.getTileEntity(pos).getClass() == TileVil.class) {
+					TileVil tile = (TileVil)worldIn.getTileEntity(pos);
 					if (tile.getAllStacks() != null) {
 						event.setCanceled(true);
 						BlockVil block = (BlockVil)blockState.getBlock();

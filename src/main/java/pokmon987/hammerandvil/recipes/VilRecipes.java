@@ -2,13 +2,18 @@ package pokmon987.hammerandvil.recipes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokmon987.hammerandvil.items.ModItems;
 import pokmon987.hammerandvil.util.EqualCheck;
 
+@SideOnly(Side.CLIENT)
 public class VilRecipes {
 	
 	public static List<IVilRecipe> recipes = new ArrayList<>();
@@ -49,32 +54,43 @@ public class VilRecipes {
 		recipes.add(new OreVilRecipe(name, output, inputs, hits, toolIn));
 	}
 	
-	/** it's horrible looking. The most ugly stream structure ever seen. The worst possible method, maybe*/
-	public static IVilRecipe getRecipe(NonNullList<ItemStack> inputs, ItemStack tool) {
-		if (inputs.isEmpty() || tool.isEmpty()) {return null;}
-		List<IVilRecipe> normList = recipes.stream().filter(c -> c instanceof VilRecipe).collect(Collectors.toList());
-		List<IVilRecipe> oreList = recipes.stream().filter(c -> c instanceof OreVilRecipe).collect(Collectors.toList());
-		List<VilRecipe> newNormList = listToVilRecipeList(normList);
-		List<OreVilRecipe> newOreList = listToOreVilRecipeList(oreList);
-		IVilRecipe recipe = newNormList.stream()
-				.filter(c -> c.getInputs().stream()
-						.allMatch(f -> inputs.stream()
-								.allMatch(g -> ItemStack.areItemStacksEqual(g, f))
-					)
-				)
-				.filter(v -> v.getTool().stream().anyMatch(b -> b.isItemEqualIgnoreDurability(tool))
-				)
-				.findFirst().orElse(null);
-		if (recipe == null) {
-			recipe = newOreList.stream()
-					.filter(c -> c.getInputs().stream()
-							.allMatch(v -> v.stream()
-									.anyMatch(b -> inputs.stream()
-											.anyMatch(n -> ItemStack.areItemStacksEqual(b, n)))))
-					.filter(x -> x.getTool().stream().anyMatch(z -> z.isItemEqualIgnoreDurability(tool)))
-					.findFirst().orElse(null);
+	/** Slightly less bad, arguably. Still bad though, should be made better*/
+	public static IVilRecipe getRecipe(final NonNullList<ItemStack> inputs, ItemStack tool) {
+		if (inputs.isEmpty()) {return null;}
+		List<IVilRecipe> newRecipes = recipes.stream().filter(c -> c.getTool().stream().anyMatch(v -> ItemStack.areItemsEqualIgnoreDurability(v, tool))).collect(Collectors.toList());
+		System.out.println(newRecipes.size());
+		for (IVilRecipe oldRecipe : newRecipes) {
+			if (oldRecipe instanceof VilRecipe) {
+				VilRecipe recipe = (VilRecipe)oldRecipe;
+				System.out.println(recipe.getInputs().size());
+				int[] indexToIgnore = new int[] {4, 4, 4};
+				int matching = 0;
+				if (recipe.matches(inputs)) {
+					return recipe;
+				}
+//				for (ItemStack stack : inputs) {
+//					for (int i = 0; i < recipe.getInputs().size(); i++) {
+//						if (i != indexToIgnore[i]) {
+//							ItemStack input = recipe.getInputs().get(i);
+//							System.out.println(input + " " + stack);
+//							if (ItemStack.areItemStacksEqual(stack, input)) {
+//								indexToIgnore[i] = i;
+//								matching += 1;
+//							}
+//						}
+//					}
+//				}
+				System.out.println(indexToIgnore);
+				System.out.println(matching);
+				System.out.println(recipe);
+				if (matching == recipe.getInputs().size() && recipe.getInputs().size() == inputs.size()) {
+					return recipe;
+				}
+			} else if (oldRecipe instanceof OreVilRecipe) {
+				
+			}
 		}
-		return recipe;
+		return null;
 	}
 	
 	public static ItemStack compareTool(String name, ItemStack tool) {

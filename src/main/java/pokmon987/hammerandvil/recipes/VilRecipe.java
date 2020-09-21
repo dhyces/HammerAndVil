@@ -56,6 +56,24 @@ public class VilRecipe implements IVilRecipe {
 		return this.tool;
 	}
 	
+	public boolean matches(final NonNullList<ItemStack> matchingList) {
+		if (inputs.size() != matchingList.size()) {return false;}
+		List<ItemStack> list = new ArrayList<>();
+		for (ItemStack stack : matchingList) {
+			list.add(stack);
+		}
+		for (ItemStack stack : inputs) {
+			for (ItemStack recipeStack : list) {
+				if (ItemStack.areItemStacksEqual(stack, recipeStack)) {
+					list.remove(recipeStack);
+					break;
+				}
+			}
+
+		}
+		return list.isEmpty();
+	}
+	
 	@Override
 	public String toString() {
 		String ret = "";

@@ -10,8 +10,10 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import pokmon987.hammerandvil.HAVConfig;
@@ -34,7 +36,6 @@ public class TileVil extends TileEntity {
 		ItemStack tool = playerIn.getHeldItemMainhand();
 		inventory.setLastTool(tool);
 		inventory.checkRecipe();
-		System.out.println(inventory.currentRecipe);
 		if (inventory.currentRecipe != null) {
 			hits += 1;
 			worldIn.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, 1.5F);
@@ -58,12 +59,15 @@ public class TileVil extends TileEntity {
 	public void damageTool(ItemStack tool, EntityPlayer playerIn) {
 		if (tool.isItemStackDamageable()) {
 			tool.damageItem(1, playerIn);
-		} else if (tool.serializeNBT().hasKey("tag")) {
-			int damageAmount = tool.serializeNBT().getCompoundTag("tag").getInteger("Damage");
+		} else if (tool.serializeNBT().hasKey("tag") || tool.getItem().getRegistryName().toString().contentEquals("immersiveengineering:tool")) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tool.writeToNBT(tag);
+			if (tag.getCompoundTag("tag").hasNoTags()) {
+				tag.setTag("tag", new NBTTagCompound());
+			}
+			int damageAmount = tag.getCompoundTag("tag").getInteger("Damage");
 			tag.getCompoundTag("tag").setInteger("Damage", damageAmount + 2);
-			tool.serializeNBT().merge(tag);
+			tool.deserializeNBT(tag);
 		} else {
 			tool.shrink(1);
 		}
@@ -170,10 +174,11 @@ public class TileVil extends TileEntity {
 		}
 		
 		public boolean checkRecipe() {
+			System.out.println(getAllStacks());
 			if (currentRecipe != null && !getAllStacks().isEmpty()) {
 				if (currentRecipe instanceof VilRecipe) {
 					VilRecipe trueRecipe = (VilRecipe) currentRecipe;
-					if (trueRecipe.getInputs().stream().allMatch(c -> getAllStacks().stream().allMatch(b -> ItemStack.areItemStacksEqual(c, b)))) {
+					if (trueRecipe.matches(getAllStacks())) {
 						if (trueRecipe.getTool().stream().anyMatch(c -> c.isItemEqualIgnoreDurability(lastHitTool))) {
 							return true;
 						}
