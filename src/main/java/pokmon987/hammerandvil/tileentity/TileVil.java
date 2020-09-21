@@ -174,7 +174,6 @@ public class TileVil extends TileEntity {
 		}
 		
 		public boolean checkRecipe() {
-			System.out.println(getAllStacks());
 			if (currentRecipe != null && !getAllStacks().isEmpty()) {
 				if (currentRecipe instanceof VilRecipe) {
 					VilRecipe trueRecipe = (VilRecipe) currentRecipe;

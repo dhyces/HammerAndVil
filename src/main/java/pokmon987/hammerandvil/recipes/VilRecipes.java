@@ -58,36 +58,17 @@ public class VilRecipes {
 	public static IVilRecipe getRecipe(final NonNullList<ItemStack> inputs, ItemStack tool) {
 		if (inputs.isEmpty()) {return null;}
 		List<IVilRecipe> newRecipes = recipes.stream().filter(c -> c.getTool().stream().anyMatch(v -> ItemStack.areItemsEqualIgnoreDurability(v, tool))).collect(Collectors.toList());
-		System.out.println(newRecipes.size());
 		for (IVilRecipe oldRecipe : newRecipes) {
 			if (oldRecipe instanceof VilRecipe) {
 				VilRecipe recipe = (VilRecipe)oldRecipe;
-				System.out.println(recipe.getInputs().size());
-				int[] indexToIgnore = new int[] {4, 4, 4};
-				int matching = 0;
 				if (recipe.matches(inputs)) {
 					return recipe;
 				}
-//				for (ItemStack stack : inputs) {
-//					for (int i = 0; i < recipe.getInputs().size(); i++) {
-//						if (i != indexToIgnore[i]) {
-//							ItemStack input = recipe.getInputs().get(i);
-//							System.out.println(input + " " + stack);
-//							if (ItemStack.areItemStacksEqual(stack, input)) {
-//								indexToIgnore[i] = i;
-//								matching += 1;
-//							}
-//						}
-//					}
-//				}
-				System.out.println(indexToIgnore);
-				System.out.println(matching);
-				System.out.println(recipe);
-				if (matching == recipe.getInputs().size() && recipe.getInputs().size() == inputs.size()) {
+			} else if (oldRecipe instanceof OreVilRecipe) {
+				OreVilRecipe recipe = (OreVilRecipe)oldRecipe;
+				if (recipe.allMatch(inputs)) {
 					return recipe;
 				}
-			} else if (oldRecipe instanceof OreVilRecipe) {
-				
 			}
 		}
 		return null;

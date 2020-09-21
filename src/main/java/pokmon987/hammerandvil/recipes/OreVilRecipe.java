@@ -22,7 +22,7 @@ public class OreVilRecipe implements IVilRecipe {
 		this.tool = toolIn;
 	}
 	
-	public boolean allMatch(List<ItemStack> itemStacks) {
+	public boolean allMatch(final List<ItemStack> itemStacks) {
 		if (inputs.size() != itemStacks.size()) {return false;}
 		List<ItemStack> list = new ArrayList<>();
 		for (ItemStack stack : itemStacks) {
@@ -32,7 +32,6 @@ public class OreVilRecipe implements IVilRecipe {
 			for (ItemStack stack : triInput) {
 				boolean skip = false;
 				for (ItemStack recipeStack : list) {
-					System.out.println(recipeStack);
 					if (ItemStack.areItemStacksEqual(stack, recipeStack)) {
 						list.remove(recipeStack);
 						skip = true;
@@ -43,14 +42,6 @@ public class OreVilRecipe implements IVilRecipe {
 			}
 		}
 		return list.isEmpty();
-//		int included = 0;
-//		for (ItemStack stack : itemStacks) {
-//			if (getInputs().stream().anyMatch(c -> c.stream().anyMatch(x -> ItemStack.areItemStacksEqual(stack, x)))) {
-//				included += 1;
-//				continue;
-//			}
-//		}
-//		return included == itemStacks.size();
 	}
 	
 	@Override
