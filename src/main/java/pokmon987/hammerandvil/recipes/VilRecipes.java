@@ -6,10 +6,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokmon987.hammerandvil.HammerAndVil;
 import pokmon987.hammerandvil.items.ModItems;
 import pokmon987.hammerandvil.util.EqualCheck;
 
@@ -18,8 +22,14 @@ public class VilRecipes {
 	
 	public static List<IVilRecipe> recipes = new ArrayList<>();
 	
-	public void registerRecipes() {
-//		addVilRecipe(HammerAndVil.MODID + ":whiteConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.WHITE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.WHITE.getMetadata()), 3, ItemStack.EMPTY);
+	public static void registerRecipes() {
+		addVilRecipe(HammerAndVil.MODID + ":whiteConcrete", new ItemStack(Blocks.CONCRETE_POWDER, 1, EnumDyeColor.WHITE.getMetadata()), new ItemStack(Blocks.CONCRETE, 1, EnumDyeColor.WHITE.getMetadata()), 3, ItemStack.EMPTY);
+	}
+	
+	public static void addVilRecipe(String name, ItemStack output, ItemStack input, int hits, ItemStack... tool) {
+		NonNullList<ItemStack> inputs = NonNullList.create();
+		inputs.add(input);
+		addVilRecipe(name, output, inputs, hits, Arrays.<ItemStack>asList(tool));
 	}
 	
 	public static void addVilRecipe(String name, ItemStack output, NonNullList<ItemStack> inputs, int hits, ItemStack... tool) {

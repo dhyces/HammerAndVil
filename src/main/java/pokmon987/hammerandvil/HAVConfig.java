@@ -15,7 +15,7 @@ public class HAVConfig {
 	public static class General {
 		
 		@Comment("Disabled by default. If enabled, when a recipe is crafted the vil will drop it as an entity, rather than"
-				+" keeping it in the vil")
+				+" keeping it in the vil.")
 			public static boolean dropOnCraft = true;
 		
 		@RequiresMcRestart
